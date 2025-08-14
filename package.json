@@ -1,0 +1,12 @@
+{
+  "name": "sample-js-app",
+  "version": "0.0.1",
+  "description": "Tiny Node.js app for k8s demo",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node test-runner.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
