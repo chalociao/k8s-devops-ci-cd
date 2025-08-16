@@ -59,7 +59,7 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:latest
-          file: Dockerfile
+          file: docker/Dockerfile
           context: .
 
   deploy-to-k8s:
