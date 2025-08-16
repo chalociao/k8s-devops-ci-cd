@@ -5,7 +5,7 @@ metadata:
   labels:
     app: sample-js-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: sample-js-app
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sample-js-app
-        image: YOUR_DOCKERHUB_USER/sample-js-app:latest
+        image: DOCKERHUB_USERNAME/sample-js-app:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

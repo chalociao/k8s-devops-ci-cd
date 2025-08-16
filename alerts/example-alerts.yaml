@@ -1,0 +1,58 @@
+# Grafana
+grafana:
+  enabled: true
+  adminPassword: admin
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+
+# Prometheus
+prometheus:
+  service:
+    type: ClusterIP
+  prometheusSpec:
+    retention: 15d
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+
+    # Alert rules
+    additionalPrometheusRulesMap:
+      pod-crash-high-cpu-http5xx:
+        groups:
+          - name: pod-crash-rules
+            rules:
+              - alert: PodCrashLooping
+                expr: increase(kube_pod_container_status_restarts_total[5m]) > 3
+                for: 2m
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "Pod {{ $labels.pod }} is restarting frequently in {{ $labels.namespace }}"
+                  description: "Container {{ $labels.container }} restarted >3 times in 5m."
+
+          - name: high-cpu
+            rules:
+              - alert: HighNodeCPU
+                expr: (100 * (1 - avg by (instance)(rate(node_cpu_seconds_total{mode="idle"}[5m])))) > 80
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "High node CPU on {{ $labels.instance }}"
+                  description: "Node CPU > 80% for 5m."
+
+          - name: http-errors
+            rules:
+              # Requires ingress-nginx metrics (we enabled ServiceMonitor above)
+              - alert: HighHttp5xxErrorRate
+                expr: |
+                  sum(rate(nginx_ingress_controller_requests{status=~"5.."}[5m]))
+                  /
+                  sum(rate(nginx_ingress_controller_requests[5m])) > 0.05
+                for: 2m
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "High 5xx error rate on ingress {{ $labels.ingress }}"
+                  description: "More than 5% requests are 5xx in the last 5 minutes."
