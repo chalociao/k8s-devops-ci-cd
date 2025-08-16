@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-js-ingress
+  annotations:
+    # nginx ingress controller annotations (adjust if you use another controller)
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: sample.example.com   # replace with your domain (or skip host)
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sample-js-service
+            port:
+              number: 80
