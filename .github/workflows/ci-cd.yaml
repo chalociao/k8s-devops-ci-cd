@@ -19,7 +19,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build image for test-runner
-        run: docker build -t test-image:ci .
+        run: docker build -t test-image:ci ../docker/Dockerfile
 
       - name: Run tests (start app + health check)
         run: |
